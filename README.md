@@ -2,8 +2,6 @@
 
 Chào mừng bạn đến với **Dragon Dash**! Một tựa game cuộn ngang (side-scrolling) thú vị, nơi bạn sẽ điều khiển những chú rồng với các bộ kỹ năng đặc biệt bay lượn qua các chướng ngại vật vô tận. Trò chơi lấy cảm hứng từ thể loại bay lượn truyền thống nhưng được nâng cấp với hệ thống nhân vật đa dạng, kỹ năng độc đáo và các cấp độ khó khác nhau.
 
-🎮 **Chơi ngay tại đây:** [Dragon Dash](https://noanonoa.github.io/dragon-dash/)
-
 ---
 
 ## 🛠 Hướng Dẫn Cài Đặt (Chạy Offline)
