@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Dash</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="game-title">DRAGON DASH</h1>
+        <div class="game-screen">
+            <!-- Nút tắt chọn nhân vật -->
+            <div class="shortcut-btn" id="char-btn" title="Chọn Rồng">
+                <span>+</span>
+            </div>
+
+            <!-- Giao diện chọn nhân vật -->
+            <div id="char-menu" class="char-menu">
+                <div class="char-container">
+                    <div class="char-header">CHOOSE YOUR DRAGON</div>
+                    <div class="char-options">
+                        <div class="char-option selected" data-type="red">
+                            <div class="char-preview red"></div>
+                            <span>SHYVANA</span>
+                        </div>
+                        <div class="char-option" data-type="blue">
+                            <div class="char-preview blue"></div>
+                            <span>ANIVIA</span>
+                        </div>
+                        <div class="char-option" data-type="black">
+                            <div class="char-preview black"></div>
+                            <span>MORDEKAISER</span>
+                        </div>
+                        <div class="char-option shimmer-green" data-type="green">
+                            <div class="char-preview green"></div>
+                            <span>RAUMA</span>
+                        </div>
+                        <div class="char-option shimmer-dark" data-type="dark">
+                            <div class="char-preview dark"></div>
+                            <span>BANHCAY</span>
+                        </div>
+                        <div class="char-option shimmer-grey" data-type="bone">
+                            <div class="char-preview bone"></div>
+                            <span>THRESH</span>
+                        </div>
+                    </div>
+                    <!-- Phần hiển thị thông tin kĩ năng -->
+                    <div id="char-info" class="char-info">
+                        <div id="char-name-display" class="char-name-info">SHYVANA</div>
+                        <div id="char-skill-display" class="char-skill-info">Skill: None</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="menu-screen" class="menu-screen">
+                <div class="selection-container">
+                    <div class="selection-box" data-difficulty="challenge">
+                        <span>CHALLENGE</span>
+                    </div>
+                    <div class="selection-box" data-difficulty="normal">
+                        <span>NORMAL</span>
+                    </div>
+                    <div class="selection-box" data-difficulty="hard">
+                        <span>HARD</span>
+                    </div>
+                </div>
+            </div>
+            <canvas id="game" width="450" height="700"></canvas>
+            
+            <!-- Nút chiêu thức trong game -->
+            <div id="skill-ui" class="skill-ui hidden">
+                <div id="skill-btn-z" class="skill-btn hidden" title="Kỹ năng Z">Z</div>
+                <div id="skill-btn-e" class="skill-btn hidden" title="Kỹ năng E">E</div>
+                <div id="skill-btn-w" class="skill-btn hidden" title="Kỹ năng W">W</div>
+                <div id="skill-btn-q" class="skill-btn hidden" title="Kỹ năng Q">Q</div>
+            </div>
+
+            <p id="description" class="game-description">Press 'spacebar' or 'click' to begin</p>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

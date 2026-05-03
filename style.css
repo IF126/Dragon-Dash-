@@ -1,0 +1,611 @@
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700;900&display=swap');
+
+body {
+    background-color: rgba(0,0,0, .95);
+    height: 100vh;
+    margin: 0;
+}
+
+/********************
+* màn hình trò chơi *
+********************/
+h1.game-title {
+/***** Dragon Dash *****/
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 120%;
+    
+    /* Gradient Lửa */
+    background: linear-gradient(180deg, #FFFF00 0%, #FF8C00 50%, #FF0000 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Viền trắng mỏng 1px */
+    -webkit-text-stroke: 1px #FFF;
+    
+    /* 3D Pop-out Shadow hướng xuống dưới */
+    filter: drop-shadow(2px 2px 0px #8B0000) drop-shadow(4px 6px 0px #000) drop-shadow(6px 6px 15px rgba(255, 69, 0, 0.5));
+    
+    /* Căn chỉnh bố cục: Đưa xuống gần bảng chơi hơn */
+    margin: 30px auto 0 auto;
+    width: 100%;
+    z-index: 10;
+    
+    /* Hoạt ảnh Flicker */
+    animation: flickerTitle 2s infinite;
+}
+
+@keyframes flickerTitle {
+    0%, 95%, 100% { filter: drop-shadow(2px 2px 0px #8B0000) drop-shadow(4px 6px 0px #000) drop-shadow(6px 6px 15px rgba(255, 69, 0, 0.5)); opacity: 1; }
+    96%, 98% { filter: brightness(1.5) drop-shadow(2px 2px 0px #8B0000) drop-shadow(4px 6px 0px #000) drop-shadow(0px 0px 20px #FFD700); opacity: 0.9; }
+}
+
+.game-screen {
+    width: 450px;
+    height: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+canvas {
+    background-color: black;
+    display: block;
+    width: 450px;
+    height: 700px;
+    margin: 15px auto 0 auto;
+    border-radius: 10px;
+    object-fit: contain;
+}
+    .game-description {
+        color: #f0f0f0;
+        line-height: 2em;
+        text-align: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 12px;
+        margin-top: 10px;
+        text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+    }
+
+/* Định dạng màn hình Menu */
+.menu-screen {
+    position: absolute;
+    top: 15px; /* Match canvas margin-top */
+    left: 0;
+    width: 450px;
+    height: 700px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    border-radius: 10px;
+    transition: opacity 0.5s ease;
+}
+
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 80%;
+}
+
+.selection-box {
+    height: 100px;
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 0, 0, 0.2));
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.selection-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.selection-box:hover::before {
+    left: 100%;
+}
+
+.selection-box:hover {
+    transform: scale(1.05) translateY(-5px);
+    border-color: #ff8c00;
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.4), rgba(255, 0, 0, 0.4));
+    box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3);
+}
+
+.selection-box span {
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    font-size: 20px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.selection-box[data-difficulty="challenge"]:hover { box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); border-color: #00ff00; }
+.selection-box[data-difficulty="normal"]:hover { box-shadow: 0 0 30px rgba(255, 255, 0, 0.4); border-color: #ffff00; }
+.selection-box[data-difficulty="hard"]:hover { box-shadow: 0 0 30px rgba(255, 0, 0, 0.4); border-color: #ff0000; }
+
+.hidden {
+    display: none !important;
+}
+
+/* Nút phím tắt */
+.shortcut-btn {
+    position: absolute;
+    top: 25px; /* Canvas top (15px) + 10px offset */
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background: #FF8C00; /* sRGB Orange */
+    border: 3px solid #FFF;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 110;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.6), inset 0 0 5px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.shortcut-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: #FFD700; /* Gold */
+}
+
+.shortcut-btn span {
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+/* Giao diện chọn nhân vật */
+.char-menu {
+    position: absolute;
+    top: 15px; /* Match canvas margin-top */
+    left: 0;
+    width: 450px;
+    height: 700px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Cố định từ trên xuống */
+    padding-top: 50px;
+    z-index: 105;
+    border-radius: 10px;
+    transition: opacity 0.4s ease;
+}
+
+.char-container {
+    width: 100%;
+    max-width: 400px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.char-header {
+    font-family: 'Press Start 2P', cursive;
+    color: #FFD700;
+    text-align: center;
+    font-size: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    text-shadow: 3px 3px #000;
+}
+
+.char-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.char-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 160px; /* Cố định chiều rộng */
+    height: 120px; /* Cố định chiều cao */
+    padding: 8px 4px;
+    cursor: pointer;
+    border: 2px solid #444;
+    background: transparent;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    opacity: 0.6; /* Mờ hơn khi không chọn */
+    filter: grayscale(0.3);
+}
+
+.char-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.char-option.selected {
+    border-color: #FFD700;
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.3);
+    opacity: 1 !important; /* Sáng rõ nhất khi chọn */
+    filter: brightness(1.3) grayscale(0) !important;
+    transform: scale(1.05) !important;
+    z-index: 10;
+}
+
+.char-preview {
+    width: 90px;
+    height: 70px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+
+.char-preview.red { filter: none; }
+.char-preview.blue { filter: hue-rotate(200deg) brightness(1.2) saturate(1.5); }
+.char-preview.black { filter: grayscale(1) brightness(1.0) contrast(1.2); }
+.char-preview.bone { filter: none; }
+.char-preview.dark { filter: none; }
+.char-preview.green { 
+    filter: sepia(1) hue-rotate(80deg) saturate(5) brightness(1.1) drop-shadow(0 0 8px rgba(0, 255, 0, 0.8)); 
+    z-index: 3;
+    position: relative;
+}
+
+.char-option span {
+    font-family: 'Press Start 2P', cursive;
+    color: #eee;
+    font-size: 10px;
+}
+
+/* --- Premium Shimmer & Sparkle for Dark Dragon --- */
+.shimmer-dark {
+    position: relative;
+    overflow: hidden;
+    border-color: #6a0dad !important; /* Deep Purple */
+    background: rgba(106, 13, 173, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng quét ánh sáng */
+.shimmer-dark::before {
+    content: "";
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 70%,
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: sweep 4s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Các hạt lấp lánh */
+.shimmer-dark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+        radial-gradient(circle, #fff 1px, transparent 1px),
+        radial-gradient(circle, #fff 1.5px, transparent 1.5px),
+        radial-gradient(circle, #ff00ff 1px, transparent 1px);
+    background-size: 50px 50px, 70px 70px, 45px 45px;
+    background-position: 0 0, 25px 25px, 10px 10px;
+    animation: floating-sparkles 8s infinite linear;
+    opacity: 0.4;
+    z-index: 2;
+}
+
+@keyframes sweep {
+    0% { transform: translateX(-120%) translateY(-120%) rotate(45deg); }
+    100% { transform: translateX(120%) translateY(120%) rotate(45deg); }
+}
+
+@keyframes floating-sparkles {
+    0% { background-position: 0 0, 25px 25px, 10px 10px; opacity: 0.2; }
+    50% { opacity: 0.5; }
+    100% { background-position: 50px 50px, 100px 100px, 60px 60px; opacity: 0.2; }
+}
+
+/* Ánh sáng nhấp nháy khi di chuột hoặc được chọn */
+.shimmer-dark:hover, .shimmer-dark.selected {
+    border-color: #ff00ff !important;
+    border-width: 4px !important;
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.8), 0 0 60px rgba(255, 0, 255, 0.4), inset 0 0 25px rgba(255, 0, 255, 0.5) !important;
+    animation: dark-pulse 1.5s infinite ease-in-out;
+    filter: brightness(1.6) grayscale(0) !important;
+}
+
+@keyframes dark-pulse {
+    0%, 100% { transform: scale(1.05); filter: brightness(1.5); }
+    50% { transform: scale(1.1); filter: brightness(2.0); }
+}
+
+/* Làm cho rồng tối nổi bật hơn */
+.char-preview.dark {
+    filter: drop-shadow(0 0 8px rgba(106, 13, 173, 0.8));
+    z-index: 3;
+    position: relative;
+}
+
+/* Thêm vầng sáng xám và làm to Thresh */
+.char-preview.bone {
+    filter: drop-shadow(0 0 10px rgba(200, 200, 200, 0.8));
+    z-index: 3;
+    position: relative;
+    transform: scale(1.15); /* Làm rồng to ra 15% */
+}
+
+/* --- Premium Shimmer & Sparkle for Green Dragon (RauMa) --- */
+.shimmer-green {
+    position: relative;
+    overflow: hidden;
+    border-color: #008000 !important; /* Green */
+    background: rgba(0, 128, 0, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng quét ánh sáng */
+.shimmer-green::before {
+    content: "";
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 70%,
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: sweep 4s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Các hạt lấp lánh */
+.shimmer-green::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+        radial-gradient(circle, #fff 1px, transparent 1px),
+        radial-gradient(circle, #fff 1.5px, transparent 1.5px),
+        radial-gradient(circle, #00ff00 1px, transparent 1px);
+    background-size: 50px 50px, 70px 70px, 45px 45px;
+    background-position: 0 0, 25px 25px, 10px 10px;
+    animation: floating-sparkles 8s infinite linear;
+    opacity: 0.4;
+    z-index: 2;
+}
+
+/* Ánh sáng nhấp nháy khi di chuột hoặc được chọn */
+.shimmer-green:hover, .shimmer-green.selected {
+    border-color: #00ff00 !important;
+    border-width: 4px !important;
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.8), 0 0 60px rgba(0, 255, 0, 0.4), inset 0 0 25px rgba(0, 255, 0, 0.5) !important;
+    animation: green-pulse 1.5s infinite ease-in-out;
+    filter: brightness(1.6) grayscale(0) !important;
+}
+
+@keyframes green-pulse {
+    0%, 100% { transform: scale(1.05); filter: brightness(1.5); }
+    50% { transform: scale(1.1); filter: brightness(2.0); }
+}
+
+/* --- Hiệu ứng lấp lánh cao cấp cho Rồng Xương (Thresh) --- */
+.shimmer-grey {
+    position: relative;
+    overflow: hidden;
+    border-color: #888 !important; /* Grey */
+    background: rgba(128, 128, 128, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.shimmer-grey::before {
+    content: "";
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 70%,
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: sweep 4s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.shimmer-grey::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+        radial-gradient(circle, #000 1.2px, transparent 1.2px),
+        radial-gradient(circle, #000 1.8px, transparent 1.8px),
+        radial-gradient(circle, #000 1px, transparent 1px);
+    background-size: 40px 40px, 60px 60px, 35px 35px;
+    background-position: 0 0, 20px 20px, 10px 10px;
+    animation: floating-sparkles 8s infinite linear;
+    opacity: 0.5;
+    z-index: 2;
+}
+
+.shimmer-grey:hover, .shimmer-grey.selected {
+    border-color: #ffffff !important;
+    border-width: 4px !important;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(200, 200, 200, 0.5), inset 0 0 25px rgba(255, 255, 255, 0.4) !important;
+    animation: grey-pulse 1.5s infinite ease-in-out;
+    filter: brightness(1.6) grayscale(0) !important;
+}
+
+@keyframes grey-pulse {
+    0%, 100% { transform: scale(1.05); filter: brightness(1.5); }
+    50% { transform: scale(1.1); filter: brightness(2.0); }
+}
+
+/* Hộp thông tin nhân vật */
+.char-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    border-radius: 12px;
+    text-align: center;
+    min-height: 120px; /* Cố định chiều cao tối thiểu lớn hơn để chứa mọi mô tả */
+    backdrop-filter: blur(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.char-name-info {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 900; /* Dùng độ dày tối đa để khớp với phong cách game */
+    color: #FFD700;
+    font-size: 14px; 
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px #000;
+    text-transform: uppercase; /* Giữ in hoa cho giống phông pixel */
+    letter-spacing: 1px;
+}
+
+.char-skill-info {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    color: #eee;
+    font-size: 12px; 
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.skill-highlight {
+    color: #00ffcc;
+    font-weight: 900;
+    text-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
+}
+
+/* Skill UI Overlay */
+.skill-ui {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 15px;
+    z-index: 150;
+    transition: opacity 0.3s ease;
+}
+
+.skill-btn {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 18px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.skill-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.skill-btn:active {
+    transform: scale(0.9);
+}
+
+.skill-btn.disabled {
+    opacity: 0.3;
+    filter: grayscale(1);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#skill-btn-z { border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); text-shadow: 0 0 8px #00ff88; }
+#skill-btn-e { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); text-shadow: 0 0 8px #ffd700; }
+#skill-btn-w { border-color: #00ccff; box-shadow: 0 0 15px rgba(0, 204, 255, 0.3); text-shadow: 0 0 8px #00ccff; }
+#skill-btn-q { border-color: #ff3333; box-shadow: 0 0 15px rgba(255, 51, 51, 0.3); text-shadow: 0 0 8px #ff3333; }
+
+#skill-btn-z:hover { background: rgba(0, 255, 136, 0.2); box-shadow: 0 0 25px rgba(0, 255, 136, 0.6); }
+#skill-btn-e:hover { background: rgba(255, 215, 0, 0.2); box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+#skill-btn-w:hover { background: rgba(0, 204, 255, 0.2); box-shadow: 0 0 25px rgba(0, 204, 255, 0.6); }
+#skill-btn-q:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 25px rgba(255, 51, 51, 0.6); }
+
+.skill-btn::after {
+    content: attr(data-cost);
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4500;
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 10px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 900;
+    display: none;
+}
+
+.skill-btn[data-cost]::after {
+    display: block;
+}
