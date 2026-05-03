@@ -3,7 +3,6 @@ let cvs
 let ctx
 let description
 let theme1
-let theme2
 let bg
 let dragon
 let pipes
